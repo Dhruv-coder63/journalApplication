@@ -1,6 +1,7 @@
 package net.edigest.journalApp.JournalApplication.entity;
 
 import lombok.*;
+import net.edigest.journalApp.JournalApplication.enums.Sentiment;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -20,5 +21,5 @@ public class JournalEntry {
     private String content;
 
     private LocalDateTime date;
-
+    private Sentiment sentiment;
 }
