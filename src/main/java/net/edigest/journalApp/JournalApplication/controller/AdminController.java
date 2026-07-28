@@ -1,6 +1,7 @@
 package net.edigest.journalApp.JournalApplication.controller;
 
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.edigest.journalApp.JournalApplication.cache.AppCache;
 import net.edigest.journalApp.JournalApplication.entity.User;
 import net.edigest.journalApp.JournalApplication.service.UserService;
@@ -14,23 +15,29 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
+@Tag(name = "Admin APIs")
 public class AdminController {
+
     @Autowired
     private UserService userService;
+
     @Autowired
     private AppCache appCache;
+
     @GetMapping("/all-users")
-    public ResponseEntity<?> getAllUsers(){
+    public ResponseEntity<?> getAllUsers() {
         List<User> all = userService.getAll();
-        if (all != null && !all.isEmpty()){
+        if (all != null && !all.isEmpty()) {
             return new ResponseEntity<>(all, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
     @PostMapping("/create-admin-user")
-    public void createUser(@RequestBody User user){
+    public void createUser(@RequestBody User user) {
         userService.saveAdmin(user);
     }
+
     @GetMapping("clear-app-cache")
     public void clearAppCache(){
         appCache.init();

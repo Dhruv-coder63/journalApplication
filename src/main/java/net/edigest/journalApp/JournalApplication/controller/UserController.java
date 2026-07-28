@@ -1,5 +1,6 @@
 package net.edigest.journalApp.JournalApplication.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import net.edigest.journalApp.JournalApplication.api_response.WeatherResponse;
 import net.edigest.journalApp.JournalApplication.entity.JournalEntry;
 import net.edigest.journalApp.JournalApplication.entity.User;
@@ -20,8 +21,10 @@ import java.util.Optional;
 
 
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/user")
+@Tag(name = "User APIs", description = "Read, Update & Delete User")
 public class UserController {
+
     @Autowired
     private UserService userService;
 
@@ -32,31 +35,32 @@ public class UserController {
     private WeatherService weatherService;
 
     @PutMapping
-    public ResponseEntity<?> updateUser(@RequestBody User user){
+    public ResponseEntity<?> updateUser(@RequestBody User user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username=authentication.getName();
-        User userIndb =userService.findByUserName(username);
-        if (userIndb != null){
-            userIndb.setUsername(user.getUsername());
-            userIndb.setPassword(user.getPassword());
-            userService.saveUser(userIndb);
-        }
+        String userName = authentication.getName();
+        User userInDb = userService.findByUserName(userName);
+        userInDb.setUsername(user.getUsername());
+        userInDb.setPassword(user.getPassword());
+        userService.saveNewUser(userInDb);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @DeleteMapping
-    public ResponseEntity<?> deleteUserById(){
+    public ResponseEntity<?> deleteUserById() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         userRepository.deleteByUsername(authentication.getName());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
     @GetMapping
-    public ResponseEntity<?> greeting(){
+    public ResponseEntity<?> greeting() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        WeatherResponse weatherResponse =weatherService.getWeather("Delhi");
-        String greeting="";
-        if (weatherResponse != null){
-            greeting=", Weather feels like "+weatherResponse.getMain().getFeelsLike();
+        WeatherResponse weatherResponse = weatherService.getWeather("Mumbai");
+        String greeting = "";
+        if (weatherResponse != null) {
+            greeting = ", Weather feels like " + weatherResponse.getMain().getFeelsLike();
         }
-        return new ResponseEntity<>("Hi " + authentication.getName() + greeting,HttpStatus.OK);
+        return new ResponseEntity<>("Hi " + authentication.getName() + greeting, HttpStatus.OK);
     }
+
 }
